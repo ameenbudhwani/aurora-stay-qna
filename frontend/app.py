@@ -33,7 +33,7 @@ with st.sidebar:
         "k (chunks to retrieve)",
         min_value=1,
         max_value=10,
-        value=2,
+        value=5,
         help="Number of relevant chunks fetched from the vector store."
     )
 
@@ -41,7 +41,7 @@ with st.sidebar:
         "Temperature",
         min_value=0.0,
         max_value=1.0,
-        value=0.0,
+        value=0.1,
         step=0.1,
         help="Higher values make the output more creative; lower values make it more focused."
     )
@@ -50,9 +50,18 @@ with st.sidebar:
         "Max tokens",
         min_value=64,
         max_value=2048,
-        value=512,
+        value=256,
         step=64,
         help="Maximum number of tokens in the generated answer."
+    )
+
+    top_p = st.slider(
+        "Top-p",
+        min_value=0.1,
+        max_value=1.0,
+        value=0.95,
+        step=0.05,
+        help="Nucleus sampling: share of the probability mass considered for each token."
     )
 
 
@@ -71,6 +80,7 @@ st.write("Ask a question about Aurora Stays policies.")
 response_type = st.radio(
     "Response mode",
     ["Answer only", "Answer + Relevant Chunks"],
+    index=1,          # default: show the supporting source chunks with the answer
     horizontal=True
 )
 
@@ -81,7 +91,7 @@ response_type = st.radio(
 
 query = st.text_input(
     "Your question",
-    placeholder="e.g., What is the waiting period for hospitalization?"
+    placeholder="e.g., What is the pet fee at ASH-CHI Loop?"
 )
 
 
@@ -107,6 +117,7 @@ if st.button("Submit", type="primary"):
             "query": query,
             "k": k,
             "temperature": temperature,
+            "top_p": top_p,
             "max_tokens": max_tokens
         }
 
