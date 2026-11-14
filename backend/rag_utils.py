@@ -27,19 +27,17 @@ def generate(query, retrieved_chunks,model) -> str:
     {retrieved_chunks}
 
     Rules:
-    1. Use only information explicitly stated in the retrieved policy information.
-    2. Do not use outside knowledge, assumptions, or general hotel-industry practice.
-    3. Include every detail needed to answer the query completely: exact times, fees, limits, deadlines, and the property code when the query names a property or city.
-    4. Do not omit conditions, exceptions, approvals, or verification steps that change the answer (for example "subject to availability" or "confirm the live property profile").
-    5. Focus only on information directly relevant to the user's query.
-    6. Do not include unrelated policies, properties, or rate plans from the retrieved information.
-    7. Answer the specific question in the first sentence, then give the supporting conditions.
-    8. Keep the answer concise, clear, and easy for front-desk staff to read.
-    9. Do not invent fees, times, room features, amenities, eligibility rules, or exceptions.
-    10. If the retrieved information answers only part of the query, answer that part and state which part is not covered.
-        If it does not address the query at all, say:
+    1. Use only information stated in the retrieved policy information. Do not use outside knowledge or general hotel-industry practice.
+    2. Apply the general policy rules to the guest's situation even when the query adds details the policy does not mention. For example, the Advance Purchase cancellation rule applies whatever the reason for cancelling, and the room-type table answers occupancy or feature questions for that room type.
+    3. Quote property-specific values (times, parking, pet fees, breakfast) only from a row that names the same property code or city as the query. Never give one property's value for another property; if the requested property is not in the retrieved information, say so for that property.
+    4. Include every detail needed to answer completely: exact times, fees, limits, deadlines, and the property code.
+    5. Include the conditions, exceptions, approvals, or verification steps attached to the rule you quote (for example "subject to availability" or "confirm the live property profile").
+    6. Answer the specific question in the first sentence, then give the supporting conditions. Leave out unrelated policies, properties, or rate plans.
+    7. Keep the answer concise, clear, and easy for front-desk staff to read.
+    8. Do not invent fees, times, room features, amenities, eligibility rules, exceptions, or next steps. Do not add advice such as "contact the property team" unless that instruction appears in the retrieved information.
+    9. If the retrieved information answers only part of the query, answer that part first and then state in one sentence which part is not covered.
+    10. Only if nothing in the retrieved information is relevant to the query, reply exactly:
         "The available policy documents do not contain enough information to answer this question."
-        and add the next step only if the retrieved information names one (for example, contacting the property team).
         If the retrieved information conflicts, clearly mention the conflict.
 
     Answer:
@@ -50,7 +48,7 @@ def generate(query, retrieved_chunks,model) -> str:
 # Define the full RAG pipeline combining retrieval and generation
 def rag(
     query: str,
-    k: int = 5,                      # defaults match the evaluated configuration
+    k: int = 4,                      # defaults match the evaluated configuration
     model_name: str = "gpt-4o-mini",
     temperature: float = 0.1,
     top_p: float = 0.95,
